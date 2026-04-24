@@ -1,0 +1,12 @@
+node_modules/
+.next/
+.env
+*.js.map
+.env.local
+out/
+*.swo
+build/
+Thumbs.db
+.vscode/
+*.tsbuildinfo
+npm-debug.log*
