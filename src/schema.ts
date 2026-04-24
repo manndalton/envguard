@@ -1,26 +1,41 @@
-export type EnvType = 'string' | 'number' | 'boolean' | 'url' | 'email';
+/**
+ * Schema definitions for envguard.
+ */
 
-export interface FieldSchema {
-  type: EnvType;
+import { TransformFn } from "./transformer";
+
+export type EnvVarType = "string" | "number" | "boolean";
+
+export interface EnvVarDefinition<T = unknown> {
+  type: EnvVarType;
   required?: boolean;
-  default?: string | number | boolean;
+  default?: T;
   description?: string;
+  /** Optional list of allowed values */
+  allowedValues?: T[];
+  /** Optional transform applied after parsing */
+  transform?: TransformFn<T>;
 }
 
-export type EnvSchema = Record<string, FieldSchema>;
+export type EnvSchema = Record<string, EnvVarDefinition>;
 
-export type InferEnvType<T extends EnvType> =
-  T extends 'string' ? string :
-  T extends 'number' ? number :
-  T extends 'boolean' ? boolean :
-  T extends 'url' ? string :
-  T extends 'email' ? string :
-  never;
+/**
+ * Helper to define a typed string variable.
+ */
+export function str(options: Omit<EnvVarDefinition<string>, "type"> = {}): EnvVarDefinition<string> {
+  return { type: "string", ...options };
+}
 
-export type InferSchema<S extends EnvSchema> = {
-  [K in keyof S]: S[K]['required'] extends false
-    ? S[K]['default'] extends undefined
-      ? InferEnvType<S[K]['type']> | undefined
-      : InferEnvType<S[K]['type']>
-    : InferEnvType<S[K]['type']>;
-};
+/**
+ * Helper to define a typed number variable.
+ */
+export function num(options: Omit<EnvVarDefinition<number>, "type"> = {}): EnvVarDefinition<number> {
+  return { type: "number", ...options };
+}
+
+/**
+ * Helper to define a typed boolean variable.
+ */
+export function bool(options: Omit<EnvVarDefinition<boolean>, "type"> = {}): EnvVarDefinition<boolean> {
+  return { type: "boolean", ...options };
+}
