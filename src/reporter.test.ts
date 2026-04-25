@@ -39,6 +39,17 @@ describe("formatError", () => {
       '  [PORT] must be a number (received: "abc")'
     );
   });
+
+  it("formats error with empty string as received value", () => {
+    const error: ValidationError = {
+      key: "API_KEY",
+      message: "must not be empty",
+      received: "",
+    };
+    expect(formatError(error)).toBe(
+      '  [API_KEY] must not be empty (received: "")'
+    );
+  });
 });
 
 describe("formatReport", () => {
@@ -81,6 +92,16 @@ describe("assertReport", () => {
     const report = buildReport([]);
     assertReport(report);
     expect(spy).toHaveBeenCalledWith("✔ Environment validation passed.");
+    spy.mockRestore();
+  });
+
+  it("logs error when not silent and report is invalid", () => {
+    const spy = jest.spyOn(console, "error").mockImplementation(() => {});
+    const errors: ValidationError[] = [
+      { key: "PORT", message: "must be a number" },
+    ];
+    const report = buildReport(errors);
+    expect(() => assertReport(report)).toThrow(/PORT/);
     spy.mockRestore();
   });
 });
