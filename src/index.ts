@@ -1,7 +1,10 @@
+export { str, num, bool } from './schema';
 export { parseValue } from './parser';
 export { validateEnv } from './validate';
-export type { EnvSchema } from './schema';
+export { guardEnv } from './envguard';
 export { loadEnvFile, parseDotEnv } from './loader';
-export type { LoadOptions } from './loader';
-export { createEnvGuard } from './envguard';
-export type { EnvGuardOptions, EnvGuardResult } from './envguard';
+export { applyTransforms, composeTransforms } from './transformer';
+export { buildReport, formatReport, assertReport } from './reporter';
+export { interpolate, interpolateAll } from './interpolator';
+export { watchEnvFile } from './watcher';
+export type { WatcherOptions, WatcherHandle } from './watcher';
