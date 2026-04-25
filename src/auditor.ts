@@ -28,6 +28,7 @@ export function registerDeclaredKeys(keys: string[]): void {
 
 /**
  * Record an access to an environment variable.
+ * Only the first access for a given key is stored.
  */
 export function recordAccess(key: string, value: string | undefined): void {
   if (!accessLog.has(key)) {
@@ -59,6 +60,13 @@ export function buildAuditReport(): AuditReport {
 export function resetAudit(): void {
   accessLog.clear();
   declaredKeys = new Set();
+}
+
+/**
+ * Returns true if the given key has been accessed at least once.
+ */
+export function wasAccessed(key: string): boolean {
+  return accessLog.has(key);
 }
 
 /**
