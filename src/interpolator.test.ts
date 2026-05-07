@@ -38,6 +38,15 @@ describe("interpolate", () => {
     const source = { FIRST: "John", LAST: "Doe" };
     expect(interpolate("${FIRST} ${LAST}", source)).toBe("John Doe");
   });
+
+  it("returns an empty string unchanged", () => {
+    expect(interpolate("", {})).toBe("");
+  });
+
+  it("handles a value that is only a variable reference", () => {
+    const source = { TOKEN: "abc123" };
+    expect(interpolate("${TOKEN}", source)).toBe("abc123");
+  });
 });
 
 describe("interpolateAll", () => {
@@ -67,5 +76,12 @@ describe("interpolateAll", () => {
     const result = interpolateAll(source);
     expect(result.DEFINED).toBe("yes");
     expect(result.UNDEF).toBeUndefined();
+  });
+
+  it("does not mutate the original source map", () => {
+    const source = { BASE: "http://localhost", URL: "${BASE}/api" };
+    const original = { ...source };
+    interpolateAll(source);
+    expect(source).toEqual(original);
   });
 });
