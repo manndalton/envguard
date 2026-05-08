@@ -49,6 +49,17 @@ describe('resolveSources', () => {
     const result = resolveSources(['X'], [a, b]);
     expect(result['X'].value).toBe('from-b');
   });
+
+  it('handles multiple keys in a single call', () => {
+    const result = resolveSources(
+      ['PORT', 'HOST', 'DEBUG'],
+      [fileSource, envSource, defaultSource]
+    );
+    expect(Object.keys(result)).toEqual(expect.arrayContaining(['PORT', 'HOST', 'DEBUG']));
+    expect(result['PORT'].value).toBe('8080');
+    expect(result['HOST'].value).toBe('localhost');
+    expect(result['DEBUG'].value).toBe('false');
+  });
 });
 
 describe('flattenResolved', () => {
@@ -81,6 +92,7 @@ describe('resolveEnv', () => {
     ];
     const result = resolveEnv(schema, sources);
     expect(result['PORT']).toBe('9000');
+    // APP_NAME should fall back to the defaults source
     expect(result['APP_NAME']).toBe('default-app');
   });
 });
